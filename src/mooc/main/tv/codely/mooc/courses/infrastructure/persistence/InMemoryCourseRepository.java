@@ -9,14 +9,14 @@ import java.util.Optional;
 
 @Service
 public final class InMemoryCourseRepository implements CourseRepository {
-    private HashMap<String, Course> courses = new HashMap<>();
+    private final HashMap<String, Course> courses = new HashMap<>();
 
     @Override
-    public void save(Course course) {
-        courses.put(course.id(), course);
+    public void save(final Course course) {
+        this.courses.put(course.id(), course);
     }
 
-    public Optional<Course> search(String id) {
-        return Optional.ofNullable(courses.get(id));
+    public Optional<Course> search(final String id) {
+        return Optional.ofNullable(this.courses.get(id));
     }
 }
