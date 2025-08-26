@@ -1,46 +1,28 @@
 package tv.codely.apps.mooc.controller.courses;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import tv.codely.apps.mooc.dto.CreateCourseDto;
+import tv.codely.apps.mooc.mapper.CourseMapper;
 import tv.codely.mooc.courses.application.create.CourseCreator;
 
 @RestController
+@RequiredArgsConstructor
 public final class CoursesPutController {
-    private final CourseCreator creator;
 
-    public CoursesPutController(CourseCreator creator) {
-        this.creator = creator;
-    }
+	private final CourseMapper mapper;
 
-    @PutMapping(value = "/courses/{id}")
-    public ResponseEntity index(@PathVariable String id, @RequestBody Request request) {
-        this.creator.create(id, request.name(), request.duration());
+	private final CourseCreator creator;
 
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-}
+	@PutMapping(value = "/courses/{id}")
+	public ResponseEntity index(@PathVariable final String id, @RequestBody final CreateCourseDto request) {
+		this.creator.create(this.mapper.toDomain(id, request));
 
-final class Request {
-    private String name;
-    private String duration;
-
-    String name() {
-        return name;
-    }
-
-    String duration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+		return new ResponseEntity(HttpStatus.CREATED);
+	}
 }

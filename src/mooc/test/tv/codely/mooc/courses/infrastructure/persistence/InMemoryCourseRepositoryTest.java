@@ -1,37 +1,41 @@
 package tv.codely.mooc.courses.infrastructure.persistence;
 
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import tv.codely.mooc.courses.domain.Course;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 final class InMemoryCourseRepositoryTest {
+
+	@InjectMocks
+	private InMemoryCourseRepository target;
 
 	@Test
 	void save_a_course() {
-		final var repository = new InMemoryCourseRepository();
-		final var course = new Course("id", "name", "duration");
+		final var course = Instancio.create(Course.class);
 
-		repository.save(course);
+		assertDoesNotThrow(() -> this.target.save(course));
 	}
 
 	@Test
 	void return_an_existing_course() {
-		final var repository = new InMemoryCourseRepository();
-		final var course = new Course("id", "name", "duration");
+		final var course = Instancio.create(Course.class);
 
-		repository.save(course);
+		this.target.save(course);
 
-		assertEquals(Optional.of(course), repository.search(course.id()));
+		assertEquals(Optional.of(course), this.target.search(course.getId()));
 	}
 
 	@Test
 	void not_return_a_non_existing_course() {
-		final var repository = new InMemoryCourseRepository();
 
-		assertFalse(repository.search("randomId").isPresent());
+		assertFalse(this.target.search("randomId").isPresent());
 	}
 }
