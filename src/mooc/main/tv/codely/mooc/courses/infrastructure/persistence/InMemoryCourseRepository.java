@@ -6,17 +6,18 @@ import tv.codely.shared.domain.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public final class InMemoryCourseRepository implements CourseRepository {
-	private final HashMap<String, Course> courses = new HashMap<>();
+    private final HashMap<UUID, Course> courses = new HashMap<>();
 
-	@Override
-	public void save(final Course course) {
-		this.courses.put(course.getId(), course);
-	}
+    @Override
+    public void save(final Course course) {
+        this.courses.put(course.getId().value(), course);
+    }
 
-	public Optional<Course> search(final String id) {
-		return Optional.ofNullable(this.courses.get(id));
-	}
+    public Optional<Course> search(final UUID id) {
+        return Optional.ofNullable(this.courses.get(id));
+    }
 }

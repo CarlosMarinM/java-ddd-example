@@ -2,33 +2,33 @@ package tv.codely.mooc.courses.application.create;
 
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import tv.codely.mooc.courses.application.CoursesModuleUnitTestCase;
 import tv.codely.mooc.courses.domain.Course;
-import tv.codely.mooc.courses.domain.CourseRepository;
+import tv.codely.mooc.courses.domain.CourseDuration;
+import tv.codely.mooc.courses.domain.CourseId;
+import tv.codely.mooc.courses.domain.CourseName;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import static org.instancio.Select.field;
 
-@ExtendWith(MockitoExtension.class)
-final class CourseCreatorTest {
+final class CourseCreatorTest extends CoursesModuleUnitTestCase {
 
-	@Mock
-	private CourseRepository repository;
+    @InjectMocks
+    private CourseCreator target;
 
-	@InjectMocks
-	private CourseCreator target;
+    @Test
+    void create_a_valid_course() {
+        final var createCourseRequest = Instancio.of(CreateCourseRequest.class)
+            .generate(field(CreateCourseRequest::getId), gen -> gen.text().uuid())
+            .create();
+        final var course = new Course(
+            CourseId.of(createCourseRequest.getId()),
+            new CourseName(createCourseRequest.getName()),
+            new CourseDuration(createCourseRequest.getDuration())
+        );
 
-	@Test
-	void create_a_valid_course() {
-		final var createCourseRequest = Instancio.create(CreateCourseRequest.class);
-		final var course = new Course(createCourseRequest.getId(), createCourseRequest.getName(),
-				createCourseRequest.getDuration());
+        this.target.create(createCourseRequest);
 
-		this.target.create(createCourseRequest);
-
-		verify(this.repository, atLeastOnce()).save(course);
-	}
+        this.shouldHaveSaved(course);
+    }
 }

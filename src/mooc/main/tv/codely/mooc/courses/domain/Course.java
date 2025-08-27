@@ -4,8 +4,7 @@ import lombok.Value;
 
 @Value
 public class Course {
-	String id;
-	String name;
-	String duration;
-
+    CourseId id;
+    CourseName name;
+    CourseDuration duration;
 }

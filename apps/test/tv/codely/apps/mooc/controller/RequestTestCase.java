@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public abstract class RequestTestCase {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -27,11 +28,11 @@ public abstract class RequestTestCase {
         Integer expectedStatusCode,
         String expectedResponse
     ) throws Exception {
-        ResultMatcher response = expectedResponse.isEmpty()
+        final ResultMatcher response = expectedResponse.isEmpty()
             ? content().string("")
             : content().json(expectedResponse);
 
-        mockMvc
+        this.mockMvc
             .perform(get(endpoint))
             .andExpect(status().is(expectedStatusCode))
             .andExpect(response);
@@ -43,7 +44,7 @@ public abstract class RequestTestCase {
         String body,
         Integer expectedStatusCode
     ) throws Exception {
-        mockMvc
+        this.mockMvc
             .perform(request(HttpMethod.valueOf(method), endpoint).content(body).contentType(APPLICATION_JSON))
             .andExpect(status().is(expectedStatusCode))
             .andExpect(content().string(""));
