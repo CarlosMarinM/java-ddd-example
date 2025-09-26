@@ -1,128 +1,148 @@
 // Common for all projects
 allprojects {
-    apply plugin: 'java'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
+	apply plugin: 'java'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'org.springframework.boot'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 
-    repositories {
-        mavenCentral()
-    }
+	repositories {
+		mavenCentral()
+	}
 
-    dependencies {
-        // Prod
-        implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
-        implementation 'com.vlkan.log4j2:log4j2-logstash-layout:0.19'
-        compileOnly 'org.projectlombok:lombok:1.18.10'
-        annotationProcessor 'org.projectlombok:lombok:1.18.10'
-        implementation 'org.mapstruct:mapstruct:1.3.1.Final'
-        annotationProcessor 'org.mapstruct:mapstruct-processor:1.3.1.Final'
+	dependencies {
+		// Prod
+		implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
+		implementation 'com.vlkan.log4j2:log4j2-logstash-layout:0.19'
+		implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+		annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+		compileOnly 'org.projectlombok:lombok:1.18.10'
+		annotationProcessor 'org.projectlombok:lombok:1.18.10'
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+		implementation 'mysql:mysql-connector-java'
+		implementation 'org.springframework.boot:spring-boot-starter-amqp'
+		implementation 'com.google.guava:guava:31.0.1-jre'
+		implementation 'org.reflections:reflections:0.10.2'
+		implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
-        // Test
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
-        testImplementation "org.mockito:mockito-core:2.+"
-        testImplementation("org.mockito:mockito-junit-jupiter:2.+")
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
-        testImplementation("org.instancio:instancio-core:5.5.1")
-    }
+		// Test
+		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+		testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.2'
+		testImplementation "org.mockito:mockito-core:2.+"
+		testImplementation 'org.mockito:mockito-inline:2.+'
+		testImplementation 'org.mockito:mockito-junit-jupiter:2.+'
+		testImplementation 'org.instancio:instancio-core:5.5.1'
+		testImplementation 'org.instancio:instancio-junit:5.5.1'
+	}
 
-    test {
-        useJUnitPlatform()
+	test {
+		useJUnitPlatform()
 
-        testLogging {
-            events "passed", "skipped", "failed"
-        }
-    }
+		testLogging {
+			events "passed", "skipped", "failed"
+		}
+	}
 
 
-    task view_paths {
-        doLast { task ->
-            println "$task.project.name"
-            println "------------------"
-            println "Main: $sourceSets.main.java.srcDirTrees"
-            println "   Resources: $sourceSets.main.resources.srcDirTrees"
-            println "Tests: $sourceSets.test.java.srcDirTrees"
-            println "   Resources: $sourceSets.test.resources.srcDirTrees"
-        }
-    }
+	task view_paths {
+		doLast { task ->
+			println "$task.project.name"
+			println "------------------"
+			println "Main: $sourceSets.main.java.srcDirTrees"
+			println "   Resources: $sourceSets.main.resources.srcDirTrees"
+			println "Tests: $sourceSets.test.java.srcDirTrees"
+			println "   Resources: $sourceSets.test.resources.srcDirTrees"
+		}
+	}
 }
 
 // All subprojects (located in src/*)
 subprojects {
-    group = "tv.codely.${rootProject.name}"
+	group = "tv.codely.${rootProject.name}"
 
-    sourceSets {
-        main {
-            java { srcDirs = ['main'] }
-            resources { srcDirs = ['main/resources'] }
-        }
+	sourceSets {
+		main {
+			java { srcDirs = ['main'] }
+			resources { srcDirs = ['main/resources'] }
+		}
 
-        test {
-            java { srcDirs = ['test'] }
-            resources { srcDirs = ['test/resources'] }
-        }
-    }
+		test {
+			java { srcDirs = ['test'] }
+			resources { srcDirs = ['test/resources'] }
+		}
+	}
 
-    dependencies {
-        implementation("org.springframework.boot:spring-boot-starter-web")
+	dependencies {
+		implementation("org.springframework.boot:spring-boot-starter-web")
+		annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-        testImplementation rootProject.sourceSets.main.output
-        testImplementation("org.springframework.boot:spring-boot-starter-test")
+		testImplementation rootProject.sourceSets.main.output
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-        if(project.name != "shared") {
-            implementation project(":shared")
-            testImplementation project(":shared").sourceSets.test.output
-        }
-    }
+		if (project.name != "shared") {
+			implementation project(":shared")
+			testImplementation project(":shared").sourceSets.test.output
+		}
+	}
 
-    bootJar {
-        enabled = false
-    }
+	bootJar {
+		enabled = false
+	}
 
-    jar {
-        enabled = true
-    }
+	jar {
+		enabled = true
+	}
 }
 
 // Main project (located in apps/)
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
-    }
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.10.RELEASE")
+	}
 }
 
 sourceSets {
-    main {
-        java { srcDirs = ['apps/main'] }
-        resources { srcDirs = ['apps/main/resources'] }
-    }
+	main {
+		java { srcDirs = ['apps/main'] }
+		resources { srcDirs = ['apps/main/resources'] }
+	}
 
-    test {
-        java { srcDirs = ['apps/test'] }
-        resources { srcDirs = ['apps/test/resources'] }
-    }
+	test {
+		java { srcDirs = ['apps/test'] }
+		resources { srcDirs = ['apps/test/resources'] }
+	}
 }
 
 apply plugin: 'application'
 
 bootJar {
-    archiveBaseName = 'java-ddd-skeleton'
-    archiveVersion = '0.0.1'
+	archiveBaseName = 'java-ddd-skeleton'
+	archiveVersion = '0.0.1'
 }
 
 mainClassName = 'tv.codely.apps.Starter'
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 
-//  implementation project(":shared")
-    implementation project(":backoffice")
-    implementation project(":mooc")
+	implementation project(":shared")
+	implementation project(":backoffice")
+	implementation project(":mooc")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+processResources {
+	filesMatching('application.yml') {
+		expand(project.properties)
+	}
+}
+
+processTestResources {
+	exclude '**/mysql.sock'
 }

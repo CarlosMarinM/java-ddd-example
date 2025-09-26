@@ -3,11 +3,12 @@ package tv.codely.shared.infrastructure;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import tv.codely.apps.Starter;
 
-@ContextConfiguration(classes = Starter.class)
-@SpringBootTest
+import javax.transaction.Transactional;
+
+@SpringBootTest(classes = Starter.class)
 @ExtendWith(MockitoExtension.class)
+@Transactional
 public abstract class InfrastructureTestCase {
 }
