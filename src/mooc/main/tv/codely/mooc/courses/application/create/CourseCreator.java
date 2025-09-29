@@ -19,11 +19,7 @@ public class CourseCreator {
     private final EventBus eventBus;
 
     @Transactional
-    public void create(final CreateCourseRequest createCourseRequest) {
-        final var id = CourseId.of(createCourseRequest.getId());
-        final var name = new CourseName(createCourseRequest.getName());
-        final var duration = new CourseDuration(createCourseRequest.getDuration());
-
+    public void create(final CourseId id, final CourseName name, final CourseDuration duration) {
         final var course = Course.create(id, name, duration);
 
         this.repository.save(course);

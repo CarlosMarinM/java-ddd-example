@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import tv.codely.apps.mooc.backend.dto.CreateCourseDto;
 import tv.codely.apps.mooc.backend.mapper.CourseMapper;
-import tv.codely.mooc.courses.application.create.CourseCreator;
+import tv.codely.shared.domain.bus.command.CommandBus;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +17,12 @@ public class CoursesPutController {
 
     private final CourseMapper mapper;
 
-    private final CourseCreator creator;
+    private final CommandBus commandBus;
 
     @PutMapping(value = "/courses/{id}")
-    public ResponseEntity index(@PathVariable final String id, @RequestBody final CreateCourseDto request) {
-        this.creator.create(this.mapper.toDomain(id, request));
+    public ResponseEntity<Void> index(@PathVariable final String id, @RequestBody final CreateCourseDto request) {
+        this.commandBus.dispatch(this.mapper.toCommand(id, request));
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

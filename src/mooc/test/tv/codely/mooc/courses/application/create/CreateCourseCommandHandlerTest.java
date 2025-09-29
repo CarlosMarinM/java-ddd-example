@@ -1,6 +1,7 @@
 package tv.codely.mooc.courses.application.create;
 
 import org.instancio.Instancio;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import tv.codely.mooc.courses.application.CoursesModuleUnitTestCase;
@@ -16,20 +17,25 @@ import static org.instancio.Select.field;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
-final class CourseCreatorTest extends CoursesModuleUnitTestCase {
+final class CreateCourseCommandHandlerTest extends CoursesModuleUnitTestCase {
 
     @InjectMocks
-    private CourseCreator target;
+    private CreateCourseCommandHandler target;
+
+    @BeforeEach
+    void setUp() {
+        this.target = new CreateCourseCommandHandler(new CourseCreator(this.repository, this.eventBus));
+    }
 
     @Test
     void create_a_valid_course() {
-        final var createCourseRequest = Instancio.of(CreateCourseRequest.class)
-            .generate(field(CreateCourseRequest::getId), gen -> gen.text().uuid())
+        final var command = Instancio.of(CreateCourseCommand.class)
+            .generate(field(CreateCourseCommand::getId), gen -> gen.text().uuid())
             .create();
         final var course = new Course(
-            CourseId.of(createCourseRequest.getId()),
-            new CourseName(createCourseRequest.getName()),
-            new CourseDuration(createCourseRequest.getDuration())
+            CourseId.of(command.getId()),
+            new CourseName(command.getName()),
+            new CourseDuration(command.getDuration())
         );
         final var expectedEvent = new CourseCreatedDomainEvent(
             course.getId().value(),
@@ -37,7 +43,7 @@ final class CourseCreatorTest extends CoursesModuleUnitTestCase {
             course.getDuration().value()
         );
 
-        this.target.create(createCourseRequest);
+        this.target.handle(command);
 
         verify(this.repository, atLeastOnce()).save(course);
         verify(this.eventBus, atLeastOnce()).publish(List.of(expectedEvent));
