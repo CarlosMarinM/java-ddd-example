@@ -1,5 +1,7 @@
 package tv.codely.shared.domain.bus.command;
 
-public interface CommandHandler<C extends Command> {
+import tv.codely.shared.domain.bus.Listener;
+
+public interface CommandHandler<C extends Command> extends Listener<C> {
     void handle(C command);
 }

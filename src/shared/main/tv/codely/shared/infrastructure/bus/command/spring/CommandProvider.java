@@ -1,4 +1,4 @@
-package tv.codely.shared.infrastructure.bus.command;
+package tv.codely.shared.infrastructure.bus.command.spring;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;

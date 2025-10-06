@@ -15,6 +15,8 @@ final class CoursesCounterGetControllerTest extends ApplicationTestCase {
                 "days")
         );
 
+        Thread.sleep(2000);
+
         this.assertResponse("/courses-counter", 200, "{'total': 1}");
     }
 
@@ -28,6 +30,8 @@ final class CoursesCounterGetControllerTest extends ApplicationTestCase {
             new CourseCreatedDomainEvent(UUID.fromString("92dd8402-69f3-4900-b569-3f2c2797065f"), "DDD en Cobol", "10" +
                 " years")
         );
+
+        Thread.sleep(2000);
 
         this.assertResponse("/courses-counter", 200, "{'total': 3}");
     }
@@ -54,6 +58,8 @@ final class CoursesCounterGetControllerTest extends ApplicationTestCase {
             new CourseCreatedDomainEvent(UUID.fromString("92dd8402-69f3-4900-b569-3f2c2797065f"), "DDD en Cobol", "10" +
                 " years")
         );
+
+        Thread.sleep(2000);
 
         this.assertResponse("/courses-counter", 200, "{'total': 3}");
     }

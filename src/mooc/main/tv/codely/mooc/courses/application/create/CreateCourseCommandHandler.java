@@ -10,7 +10,7 @@ import tv.codely.shared.domain.bus.command.CommandHandler;
 @Service
 @RequiredArgsConstructor
 public final class CreateCourseCommandHandler implements CommandHandler<CreateCourseCommand> {
-    
+
     private final CourseCreator creator;
 
     @Override

@@ -29,7 +29,7 @@ public class MySqlEventBus implements EventBus {
             domainEvent.getEventId(),
             domainEvent.getAggregateId().toString(),
             domainEvent.eventName(),
-            domainEvent.asBody(),
+            domainEvent.toJson(),
             domainEvent.getOccurredOn()
         );
     }

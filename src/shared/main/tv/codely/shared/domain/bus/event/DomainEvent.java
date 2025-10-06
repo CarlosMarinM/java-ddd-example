@@ -1,11 +1,12 @@
 package tv.codely.shared.domain.bus.event;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -25,10 +26,23 @@ public abstract class DomainEvent<T> {
 
     public abstract String eventName();
 
-    public String asBody() {
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> toMap() {
+        return OBJECT_MAPPER.convertValue(this, Map.class);
+    }
+
+    public String toJson() {
         try {
             return OBJECT_MAPPER.writeValueAsString(this);
-        } catch (final JsonProcessingException e) {
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static DomainEvent fromJson(final String body, Class<? extends DomainEvent> clazz) {
+        try {
+            return OBJECT_MAPPER.readValue(body, clazz);
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }

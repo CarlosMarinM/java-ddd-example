@@ -6,6 +6,7 @@ import org.springframework.amqp.core.MessagePropertiesBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import tv.codely.shared.domain.Service;
 import tv.codely.shared.domain.bus.event.DomainEvent;
+import tv.codely.shared.infrastructure.bus.event.DomainEventJsonSerializer;
 
 @Service
 public class RabbitMqPublisher {
@@ -17,7 +18,7 @@ public class RabbitMqPublisher {
     }
 
     public void publish(DomainEvent<?> domainEvent, String exchangeName) throws AmqpException {
-        final String serializedDomainEvent = domainEvent.asBody();
+        final String serializedDomainEvent = DomainEventJsonSerializer.serialize(domainEvent);
 
         final Message message = new Message(
             serializedDomainEvent.getBytes(),
