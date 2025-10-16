@@ -3,6 +3,7 @@ package tv.codely.mooc.courses.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import tv.codely.shared.domain.AggregateRoot;
+import tv.codely.shared.domain.course.CourseCreatedDomainEvent;
 
 @EqualsAndHashCode(callSuper = false)
 @Value

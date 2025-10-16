@@ -1,4 +1,4 @@
-package tv.codely.mooc.shared.infrastructure.persistence;
+package tv.codely.backoffice.shared.infrastructure.persistence;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -18,27 +18,27 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = {"tv.codely.mooc.*.infrastructure.persistence"},
-    entityManagerFactoryRef = "moocEntityManagerFactory",
-    transactionManagerRef = "moocTransactionManager"
+    basePackages = {"tv.codely.backoffice.*.infrastructure.persistence"},
+    entityManagerFactoryRef = "backofficeEntityManagerFactory",
+    transactionManagerRef = "backofficeTransactionManager"
 )
-public class MoocDataSourceConfiguration {
+public class BackofficeDataSourceConfiguration {
 
-    @Bean(name = "moocDataSource")
-    public DataSource moocDataSource() {
+    @Bean(name = "backofficeDataSource")
+    public DataSource backofficeDataSource() {
         return DataSourceBuilder.create()
-            .url("jdbc:mysql://localhost:3306/mooc")
+            .url("jdbc:mysql://localhost:3306/backoffice")
             .username("user")
             .password("pass")
             .driverClassName("com.mysql.cj.jdbc.Driver")
             .build();
     }
 
-    @Bean(name = "moocEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean moocEntityManagerFactory(@Qualifier("moocDataSource") DataSource moocDataSource) {
+    @Bean(name = "backofficeEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean backofficeEntityManagerFactory(@Qualifier("backofficeDataSource") DataSource backofficeDataSource) {
         final var em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(moocDataSource);
-        em.setPackagesToScan("tv.codely.mooc.*.infrastructure.persistence.entity");
+        em.setDataSource(backofficeDataSource);
+        em.setPackagesToScan("tv.codely.backoffice.*.infrastructure.persistence.entity");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         final var jpaProperties = new HashMap<String, Object>();
@@ -51,8 +51,8 @@ public class MoocDataSourceConfiguration {
         return em;
     }
 
-    @Bean(name = "moocTransactionManager")
-    public PlatformTransactionManager moocTransactionManager(@Qualifier("moocEntityManagerFactory") LocalContainerEntityManagerFactoryBean moocEntityManagerFactory) {
-        return new JpaTransactionManager(Objects.requireNonNull(moocEntityManagerFactory.getObject()));
+    @Bean(name = "backofficeTransactionManager")
+    public PlatformTransactionManager backofficeTransactionManager(@Qualifier("backofficeEntityManagerFactory") LocalContainerEntityManagerFactoryBean backofficeEntityManagerFactory) {
+        return new JpaTransactionManager(Objects.requireNonNull(backofficeEntityManagerFactory.getObject()));
     }
 }

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import tv.codely.mooc.courses.application.CoursesModuleUnitTestCase;
 import tv.codely.mooc.courses.domain.Course;
-import tv.codely.mooc.courses.domain.CourseCreatedDomainEvent;
 import tv.codely.mooc.courses.domain.CourseDuration;
 import tv.codely.mooc.courses.domain.CourseId;
 import tv.codely.mooc.courses.domain.CourseName;
+import tv.codely.shared.domain.course.CourseCreatedDomainEvent;
 
 import java.util.List;
 

@@ -1,9 +1,10 @@
-package tv.codely.mooc.shared.infrastructure.persistence;
+package tv.codely.retention.shared.infrastructure.persistence;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -18,27 +19,27 @@ import java.util.Objects;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = {"tv.codely.mooc.*.infrastructure.persistence"},
-    entityManagerFactoryRef = "moocEntityManagerFactory",
-    transactionManagerRef = "moocTransactionManager"
+    basePackages = {"tv.codely.retention.*.infrastructure.persistence"},
+    entityManagerFactoryRef = "retentionEntityManagerFactory",
+    transactionManagerRef = "retentionTransactionManager"
 )
-public class MoocDataSourceConfiguration {
+public class RetentionDataSourceConfiguration {
 
-    @Bean(name = "moocDataSource")
-    public DataSource moocDataSource() {
+    @Bean(name = "retentionDataSource")
+    public DataSource retentionDataSource() {
         return DataSourceBuilder.create()
-            .url("jdbc:mysql://localhost:3306/mooc")
+            .url("jdbc:mysql://localhost:3306/retention")
             .username("user")
             .password("pass")
             .driverClassName("com.mysql.cj.jdbc.Driver")
             .build();
     }
 
-    @Bean(name = "moocEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean moocEntityManagerFactory(@Qualifier("moocDataSource") DataSource moocDataSource) {
+    @Bean(name = "retentionEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean retentionEntityManagerFactory(@Qualifier("retentionDataSource") DataSource retentionDataSource) {
         final var em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(moocDataSource);
-        em.setPackagesToScan("tv.codely.mooc.*.infrastructure.persistence.entity");
+        em.setDataSource(retentionDataSource);
+        em.setPackagesToScan("tv.codely.retention.*.infrastructure.persistence.entity");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         final var jpaProperties = new HashMap<String, Object>();
@@ -51,8 +52,9 @@ public class MoocDataSourceConfiguration {
         return em;
     }
 
-    @Bean(name = "moocTransactionManager")
-    public PlatformTransactionManager moocTransactionManager(@Qualifier("moocEntityManagerFactory") LocalContainerEntityManagerFactoryBean moocEntityManagerFactory) {
-        return new JpaTransactionManager(Objects.requireNonNull(moocEntityManagerFactory.getObject()));
+    @Bean(name = "retentionTransactionManager")
+    @Primary
+    public PlatformTransactionManager retentionTransactionManager(@Qualifier("retentionEntityManagerFactory") LocalContainerEntityManagerFactoryBean retentionEntityManagerFactory) {
+        return new JpaTransactionManager(Objects.requireNonNull(retentionEntityManagerFactory.getObject()));
     }
 }

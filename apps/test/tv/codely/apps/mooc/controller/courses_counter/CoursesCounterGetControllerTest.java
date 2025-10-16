@@ -1,0 +1,66 @@
+package tv.codely.apps.mooc.controller.courses_counter;
+
+import org.junit.jupiter.api.Test;
+import tv.codely.apps.mooc.controller.ApplicationTestCase;
+import tv.codely.shared.domain.course.CourseCreatedDomainEvent;
+
+import java.util.UUID;
+
+final class CoursesCounterGetControllerTest extends ApplicationTestCase {
+
+    @Test
+    void get_the_counter_with_one_course() throws Exception {
+        this.givenISendEventsToTheBus(
+            new CourseCreatedDomainEvent(UUID.fromString("8f34bc99-e0e2-4296-a008-75f51f03aeb4"), "DDD en Java", "7 " +
+                "days")
+        );
+
+        Thread.sleep(2000);
+
+        this.assertResponse("/courses-counter", 200, "{'total': 1}");
+    }
+
+    @Test
+    void get_the_counter_with_more_than_one_course() throws Exception {
+        this.givenISendEventsToTheBus(
+            new CourseCreatedDomainEvent(UUID.fromString("8f34bc99-e0e2-4296-a008-75f51f03aeb4"), "DDD en Java", "7 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("3642f700-868a-4778-9317-a2d542d01785"), "DDD en PHP", "6 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("92dd8402-69f3-4900-b569-3f2c2797065f"), "DDD en Cobol", "10" +
+                " years")
+        );
+
+        Thread.sleep(2000);
+
+        this.assertResponse("/courses-counter", 200, "{'total': 3}");
+    }
+
+    @Test
+    void get_the_counter_with_more_than_one_course_having_duplicated_events() throws Exception {
+        this.givenISendEventsToTheBus(
+            new CourseCreatedDomainEvent(UUID.fromString("8f34bc99-e0e2-4296-a008-75f51f03aeb4"), "DDD en Java", "7 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("8f34bc99-e0e2-4296-a008-75f51f03aeb4"), "DDD en Java", "7 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("8f34bc99-e0e2-4296-a008-75f51f03aeb4"), "DDD en Java", "7 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("3642f700-868a-4778-9317-a2d542d01785"), "DDD en PHP", "6 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("3642f700-868a-4778-9317-a2d542d01785"), "DDD en PHP", "6 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("3642f700-868a-4778-9317-a2d542d01785"), "DDD en PHP", "6 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("3642f700-868a-4778-9317-a2d542d01785"), "DDD en PHP", "6 " +
+                "days"),
+            new CourseCreatedDomainEvent(UUID.fromString("92dd8402-69f3-4900-b569-3f2c2797065f"), "DDD en Cobol", "10" +
+                " years"),
+            new CourseCreatedDomainEvent(UUID.fromString("92dd8402-69f3-4900-b569-3f2c2797065f"), "DDD en Cobol", "10" +
+                " years")
+        );
+
+        Thread.sleep(2000);
+
+        this.assertResponse("/courses-counter", 200, "{'total': 3}");
+    }
+}
