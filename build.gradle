@@ -25,6 +25,9 @@ allprojects {
 		implementation 'com.google.guava:guava:31.0.1-jre'
 		implementation 'org.reflections:reflections:0.10.2'
 		implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+		implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+		implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.2'
+
 
 		// Test
 		testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'

@@ -1,6 +1,7 @@
 package tv.codely.apps.backoffice.controller.courses;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import tv.codely.shared.domain.bus.query.QueryBus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +29,9 @@ public class CoursesGetController {
     @GetMapping("/courses")
     public ResponseEntity<BackofficeCoursesDto> searchAllCourses() {
         final var response = this.queryBus.ask(new SearchAllBackofficeCoursesQuery());
-        return ResponseEntity.ok(this.responseMapper.toBackofficeCoursesDto(response));
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(10, TimeUnit.DAYS))
+            .body(this.responseMapper.toBackofficeCoursesDto(response));
     }
 
     @GetMapping("/coursesByFilter")
